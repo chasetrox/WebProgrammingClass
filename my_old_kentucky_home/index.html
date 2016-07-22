@@ -14,19 +14,19 @@
 <div id="lyrics"></div>
 
 <script>
-        var div = getElementById('lyrics');
-        var video = document.getElementsById("music_video");
-        var lyric_table = {"0:09":
+        var div = document.getElementById('lyrics');
+        var video = document.getElementById("music_video");
+        var lyric_table = {9:
         "The sun shines bright in My Old Kentucky Home,\
-        'Tis summer, the people are gay;\
-        The corn-top's ripe and the meadow's in the bloom\
-        While the birds make music all the day.",
-        "0:35":
+        'Tis summer, the people are gay;<br>\
+        The corn-top's ripe and the meadow's in the bloom<br>\
+        While the birds make music all the day.<br>",
+        35:
         "The young folks roll on the little cabin floor,\
         All merry, all happy and bright;\
         By 'n' by hard times comes a knocking at the door,\
         Then My Old Kentucky Home, good night!",
-        "1:03":
+        63:
         "Weep no more my lady\
         Oh weep no more today;\
         We will sing one song\
@@ -34,13 +34,14 @@
         For My Old Kentucky Home, far away"
         };
 
-
-        video.addEventListener("updatetime", annotate(), true);
-        video.play();
-
         function annotate() {
-                console.log(video.currentTime);
+                if (lyric_table[video.currentTime.toFixed(0)] == undefined)
+                        return;
+                div.innerText = lyric_table[video.currentTime.toFixed(0)];
         }
+        video.addEventListener("timeupdate", annotate, false);
+
+
 </script>
 </body>
 </html>
