@@ -21,11 +21,13 @@
         'Tis summer, the people are gay;<br>\
         The corn-top's ripe and the meadow's in the bloom<br>\
         While the birds make music all the day.<br>",
+        25: {src: "corn.jpg", alt: "image of corn"},
         35:
         "The young folks roll on the little cabin floor,\
         All merry, all happy and bright;\
         By 'n' by hard times comes a knocking at the door,\
         Then My Old Kentucky Home, good night!",
+        40: {src: "cabin.jpg", alt: "image of a cabin"},
         63:
         "Weep no more my lady\
         Oh weep no more today;\
@@ -34,10 +36,26 @@
         For My Old Kentucky Home, far away"
         };
 
+        function create_img(src, alt) {
+                var img = new Image();
+                img.src = src;
+                img.alt = alt;
+                return img;
+        }
         function annotate() {
-                if (lyric_table[video.currentTime.toFixed(0)] == undefined)
+                currTime = video.currentTime.toFixed(0);
+                if (lyric_table[currTime] == undefined)
                         return;
-                div.innerText = lyric_table[video.currentTime.toFixed(0)];
+                if (currTime == 25 || currTime == 40) {
+                        var img = create_img(lyric_table[currTime]["src"],
+                                         lyric_table[currTime]["alt"]);
+                        div.appendChild(img);
+                        return;
+                }
+                if (document.getElementsByTagName('img')[0] != undefined) {
+                        div.removeChild(document.getElementsByTagName('img')[0]);
+                }
+                div.innerText = lyric_table[currTime];
         }
         video.addEventListener("timeupdate", annotate, false);
 
