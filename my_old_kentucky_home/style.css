@@ -1,0 +1,16 @@
+body {
+        background-color: yellow;
+        text-align: center;
+        font-family: cursive;
+}
+
+#lyrics {
+        text-align: center;
+        width: 40%;
+        margin-left: 30%;
+}
+
+img {
+        width: 40%;
+        height: auto;
+}

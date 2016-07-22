@@ -18,9 +18,9 @@
         var video = document.getElementById("music_video");
         var lyric_table = {9:
         "The sun shines bright in My Old Kentucky Home,\
-        'Tis summer, the people are gay;<br>\
-        The corn-top's ripe and the meadow's in the bloom<br>\
-        While the birds make music all the day.<br>",
+        'Tis summer, the people are gay;\
+        The corn-top's ripe and the meadow's in the bloom\
+        While the birds make music all the day.",
         25: {src: "corn.jpg", alt: "image of corn"},
         35:
         "The young folks roll on the little cabin floor,\
@@ -46,15 +46,19 @@
                 currTime = video.currentTime.toFixed(0);
                 if (lyric_table[currTime] == undefined)
                         return;
+
                 if (currTime == 25 || currTime == 40) {
                         var img = create_img(lyric_table[currTime]["src"],
                                          lyric_table[currTime]["alt"]);
-                        div.appendChild(img);
+                        if (document.getElementsByTagName('img')[0] == undefined)
+                                div.appendChild(img);
                         return;
                 }
+
                 if (document.getElementsByTagName('img')[0] != undefined) {
                         div.removeChild(document.getElementsByTagName('img')[0]);
                 }
+
                 div.innerText = lyric_table[currTime];
         }
         video.addEventListener("timeupdate", annotate, false);
