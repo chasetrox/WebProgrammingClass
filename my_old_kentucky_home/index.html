@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>My Old Kentucky Home</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+<h1 id="title">My Old Kentucky Home</h1>
+
+<video src="https://www.cs.tufts.edu/comp/20/my_old_kentucky_home.mp4" id="music_video" controls></video>
+<div id="lyrics"></div>
+
+<script>
+        var div = getElementById('lyrics');
+        var video = document.getElementsById("music_video");
+        var lyric_table = {"0:09":
+        "The sun shines bright in My Old Kentucky Home,\
+        'Tis summer, the people are gay;\
+        The corn-top's ripe and the meadow's in the bloom\
+        While the birds make music all the day.",
+        "0:35":
+        "The young folks roll on the little cabin floor,\
+        All merry, all happy and bright;\
+        By 'n' by hard times comes a knocking at the door,\
+        Then My Old Kentucky Home, good night!",
+        "1:03":
+        "Weep no more my lady\
+        Oh weep no more today;\
+        We will sing one song\
+        For My Old Kentucky Home\
+        For My Old Kentucky Home, far away"
+        };
+
+
+        video.addEventListener("updatetime", annotate(), true);
+        video.play();
+
+        function annotate() {
+                console.log(video.currentTime);
+        }
+</script>
+</body>
+</html>
