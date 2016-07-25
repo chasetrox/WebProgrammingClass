@@ -12,9 +12,16 @@
         var data = JSON.parse(jsonData);
         var messages = document.getElementById('messages');
 
-
-        for (var msg in data) {
-                console.log(msg["content"]);
+        /* Iterates thru message set, generates a div subtree for each message*/
+        for (var i = 0; i < 2; i++) {
+                var div = document.createElement('div');
+                var p = document.createElement('p');
+                p.innerText = data[i]["content"];
+                var name = document.createElement('span');
+                name.innerText = data[i]["username"];
+                p.appendChild(name);
+                div.appendChild(p);
+                messages.appendChild(div);
         }
     }
   </script>
