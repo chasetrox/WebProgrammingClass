@@ -1,11 +1,11 @@
 function init() {
         //Map centered around South Station
-        var map-origin = new google.maps.LatLng(42.352271, -71.05524200000001)
+        var map_origin = new google.maps.LatLng(42.352271, -71.05524200000001)
 
         // Set up map
 	var myOptions = {
-		zoom: 13, // The larger the zoom number, the bigger the zoom
-		center: landmark,
+		zoom: 8,
+		center: map_origin,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 
