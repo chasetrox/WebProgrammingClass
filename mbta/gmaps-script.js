@@ -40,6 +40,7 @@ function init() {
         var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
         place_markers(map);
         draw_red_line(map);
+        var user = mark_user(map);
 }
 
 /* Iterates through stops and places custom icon'ed markers */
@@ -89,8 +90,20 @@ function draw_red_line(map) {
                         line.setMap(map);
                 }
 
-
                 if (curr == 'Savin Hill') finished = true;
                 curr = stop['next'];
+        }
+}
+
+function mark_user(map) {
+        if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                        var pos = new google.maps.LatLng(position.coords.latitude,
+                                                        position.coords.longitude);
+			marker.setMap(new google.maps.Marker({position: pos}));
+                        return pos;
+                });
+        } else {
+                console.log("Your browser does not support this feature.")
         }
 }
