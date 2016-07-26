@@ -81,15 +81,8 @@ function draw_red_line(map) {
                 pathCoords.push({lat: stations[stop.next].lat,
                            lng: stations[stop.next].lng});
 
-                if (stop.next != 'Ashmont') {
-                        var line = new google.maps.Polyline({
-                            path: pathCoords,
-                            strokeColor: '#FF0000',
-                            strokeOpacity: 1.0,
-                            strokeWeight: 2
-                          });
-                        line.setMap(map);
-                }
+                if (stop.next != 'Ashmont')
+                        create_line(pathCoords, '#FF0000', map);
 
                 if (curr == 'Savin Hill') finished = true;
                 curr = stop.next;
@@ -103,7 +96,7 @@ function mark_user(map) {
                                    lng: position.coords.longitude};
                         var marker = new google.maps.Marker({position: pos});
 			marker.setMap(map);
-                        closest_station = create_infobox(marker, pos);
+                        closest_station = create_infobox(marker, pos, map);
                         return pos;
                 });
         } else {
@@ -111,20 +104,43 @@ function mark_user(map) {
         }
 }
 
-function create_infobox(marker, pos) {
-        closest_station = "";
-        var distance = NaN;
+function create_infobox(marker, pos, map) {
+        var closest_station = "";
+        var distance = 0;
 
         for (stop in stations) {
                 st_pos = {lat: stations[stop].lat, lng: stations[stop].lng};
                 var d = haversine(pos, st_pos);
-                if (d < distance || distance == NaN) {
+                if (d < distance || distance == 0) {
                         distance = d;
                         closest_station = stop;
                 }
         }
 
+        // Creates info window which, upon click, displays closest station/distance
+        var infowindow = new google.maps.InfoWindow();
+        google.maps.event.addListener(marker, 'click', function() {
+                var info = "The closest station is " + closest_station + " located "
+                                         + distance.toFixed(2) + " miles away";
+        	infowindow.setContent(info);
+        	infowindow.open(map, marker);
+        });
 
+        var pathCoords = [];
+        pathCoords.push({lat: pos.lat, lng: pos.lng})
+        pathCoords.push({lat: stations[closest_station].lat,
+                         lng: stations[closest_station].lng});
+        create_line(pathCoords, '#0000FF', map);
+}
+
+function create_line(pathCoords, color, map) {
+        var line = new google.maps.Polyline({
+            path: pathCoords,
+            strokeColor: color,
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+          });
+        line.setMap(map);
 }
 
 //Credit goes to talkol from Stack Overflow
@@ -133,9 +149,9 @@ Number.prototype.toRad = function() {
 }
 
 function haversine(pos1, pos2) {
-        console.log(pos1);
-        var lat1 = pos1.lat, lng1 = pos1.lng;
-        var lat2 = pos2.lat, lng2 = pos2.lng;
+        var lat1 = pos1.lat, lon1 = pos1.lng;
+        var lat2 = pos2.lat, lon2 = pos2.lng;
+
 
         var R = 6371; // km
         //has a problem with the .toRad() method below.
@@ -148,5 +164,5 @@ function haversine(pos1, pos2) {
                         Math.sin(dLon/2) * Math.sin(dLon/2);
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-        var d = R * c;
+        return (R * c)/1.609;
 }
