@@ -40,7 +40,8 @@ function init() {
         var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
         place_markers(map);
         draw_red_line(map);
-        var user = mark_user(map);
+
+        var user = mark_user(map); //WK4 homework, MBTA2
 
 }
 
@@ -66,8 +67,11 @@ function place_markers(map) {
         }
 }
 
-/* Iterates through 'linked list' table structure and draws a line between
-   each stop on the red line until it reaches Savin Hill. */
+/*
+*  Iterates through 'linked list' table structure and draws a line between
+*  each stop on the red line. The linked list is shaped like a lasso; function
+*  draws down/around, omitting Ashmont-Braintree and stops drawing @ Savin Hill.
+*/
 function draw_red_line(map) {
         var finished = false;
         var curr = 'Alewife';
@@ -81,13 +85,31 @@ function draw_red_line(map) {
                 pathCoords.push({lat: stations[stop.next].lat,
                            lng: stations[stop.next].lng});
 
-                if (stop.next != 'Ashmont')
+                if (stop.next != 'Ashmont') //Gap b/w Braintree and Ashmont
                         create_line(pathCoords, '#FF0000', map);
 
                 if (curr == 'Savin Hill') finished = true;
                 curr = stop.next;
         }
 }
+
+// Takes values for a line, creates line object and draws line on map
+function create_line(pathCoords, color, map) {
+        var line = new google.maps.Polyline({
+            path: pathCoords,
+            strokeColor: color,
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+          });
+        line.setMap(map);
+}
+
+/*
+* Week 4 homework beyond this point; ugly, unloved and uncommented. Such is the
+* lot of WiP.
+*/
+
+
 
 function mark_user(map) {
         if (navigator.geolocation) {
@@ -133,15 +155,6 @@ function create_infobox(marker, pos, map) {
         create_line(pathCoords, '#0000FF', map);
 }
 
-function create_line(pathCoords, color, map) {
-        var line = new google.maps.Polyline({
-            path: pathCoords,
-            strokeColor: color,
-            strokeOpacity: 1.0,
-            strokeWeight: 2
-          });
-        line.setMap(map);
-}
 
 //Credit goes to talkol from Stack Overflow
 Number.prototype.toRad = function() {
