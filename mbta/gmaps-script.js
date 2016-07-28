@@ -63,8 +63,59 @@ function place_markers(map) {
 					title: stop
 				});
 			marker.setMap(map);
+
+                        /* Creates info window which, upon click,
+                          displays closest station/distance */
+
+                        google.maps.event.addListener(marker, 'click', function (){
+                                station_info(map, marker, stop);
+                        });
                 }
         }
+}
+// Creates info window which, upon click, displays closest station/distance
+function station_info(map, marker, stop, table) {
+        var request = new XMLHttpRequest();
+        request.open("GET", "https://sheltered-forest-5520.herokuapp.com/redline.json", true);
+        request.onreadystatechange = callme;
+        request.send(null);
+
+
+        function callme() {
+                if (request.readyState == 4 && request.status == 200) {
+                        raw_data = request.responseText;
+                        theScheduleData = JSON.parse(raw_data);
+                        var allTrains = theScheduleData.TripList.Trips;
+                        var toStop = [];
+
+                        for (i = 0; i < allTrains.length; i++) {
+                                pred = allTrains[i].Predictions;
+
+                                for (j = 0; j < pred.length; j++) {
+
+                                        if (pred[j].Stop == stop)
+                                                toStop.push({dest: allTrains[i].Destination,
+                                                               time: pred[j].Seconds});
+                                }
+                        }
+                        table = generate_table(toStop);
+                        var infowindow = new google.maps.InfoWindow();
+                        infowindow.setContent(table);
+                        infowindow.open(map, marker);
+                }
+        };
+}
+
+
+function generate_table(trains) {
+        var content = '<table><tbody><tr><td>Time to Arrival</td><td>Destination</td></tr>'
+        for (j = 0; j < trains.length; j++) {
+                tripData = '<tr><td>' + trains[j].time +'</td><td>'
+                                + trains[j].dest+'</td></tr>';
+                content += tripData;
+        }
+        content += '</tbody></table>';
+        return content;
 }
 
 /*
