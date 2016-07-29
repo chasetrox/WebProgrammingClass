@@ -38,15 +38,22 @@ var stations = {
 function init() {
         //Defines variable map as a new entity inside the div ID'd "map canvas"
         var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-        place_markers(map);
+        var markers = place_markers(map);
         draw_red_line(map);
 
+
         var user = mark_user(map); //WK4 homework, MBTA2
+        for (i in markers) {
+                var infoWindow = new google.maps.InfoWindow();
+                bindInfoWindow(markers[i], map, infoWindow);
+        }
 
 }
 
+
 /* Iterates through stops and places custom icon'ed markers */
 function place_markers(map) {
+        var markers = [];
         // Defines a closed downward arrow as our marker icon
         var icon = {path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW,
                         strokeColor: 'red'};
@@ -63,18 +70,21 @@ function place_markers(map) {
 					title: stop
 				});
 			marker.setMap(map);
-
-                        /* Creates info window which, upon click,
-                          displays closest station/distance */
-
-                        google.maps.event.addListener(marker, 'click', function (){
-                                station_info(map, marker, stop);
-                        });
+                        markers.push(marker);
                 }
         }
+        return markers;
 }
+
+function bindInfoWindow(marker, map, infowindow) {
+        marker.addListener('click', function() {
+                infowindow.setContent(station_info(map, marker));
+                infowindow.open(map, this);
+        });
+}
+
 // Creates info window which, upon click, displays closest station/distance
-function station_info(map, marker, stop, table) {
+function station_info(map, marker) {
         var request = new XMLHttpRequest();
         request.open("GET", "https://sheltered-forest-5520.herokuapp.com/redline.json", true);
         request.onreadystatechange = callme;
@@ -88,20 +98,15 @@ function station_info(map, marker, stop, table) {
                         var allTrains = theScheduleData.TripList.Trips;
                         var toStop = [];
 
-                        for (i = 0; i < allTrains.length; i++) {
-                                pred = allTrains[i].Predictions;
-
-                                for (j = 0; j < pred.length; j++) {
-
-                                        if (pred[j].Stop == stop)
-                                                toStop.push({dest: allTrains[i].Destination,
-                                                               time: pred[j].Seconds});
+                        for (train in allTrains) {
+                                sched = allTrains[train].Predictions;
+                                for (trip in sched) {
+                                        if (sched[trip].Stop == stop)
+                                                toStop.push({dest: allTrains[train].Destination,
+                                                             time: sched[trip].Seconds});
                                 }
                         }
-                        table = generate_table(toStop);
-                        var infowindow = new google.maps.InfoWindow();
-                        infowindow.setContent(table);
-                        infowindow.open(map, marker);
+                        return generate_table(toStop);
                 }
         };
 }
