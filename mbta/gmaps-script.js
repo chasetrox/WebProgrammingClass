@@ -76,53 +76,6 @@ function place_markers(map) {
         return markers;
 }
 
-function bindInfoWindow(marker, map, infowindow) {
-        marker.addListener('click', function() {
-                station_info(map, marker);
-        });
-}
-
-// Creates info window which, upon click, displays closest station/distance
-function station_info(map, marker) {
-        var request = new XMLHttpRequest();
-        request.open("GET", "https://sheltered-forest-5520.herokuapp.com/redline.json", true);
-        request.onreadystatechange = callme;
-        request.send(null);
-
-
-        function callme() {
-                if (request.readyState == 4 && request.status == 200) {
-                        raw_data = request.responseText;
-                        theScheduleData = JSON.parse(raw_data);
-                        var allTrains = theScheduleData.TripList.Trips;
-                        var toStop = [];
-
-                        for (train in allTrains) {
-                                sched = allTrains[train].Predictions;
-                                for (trip in sched) {
-                                        if (sched[trip].Stop == stop)
-                                                toStop.push({dest: allTrains[train].Destination,
-                                                             time: sched[trip].Seconds});
-                                }
-                        }
-                        var infoWindow = new google.maps.InfoWindow();
-                        infoWindow.setContent(generate_table(toStop));
-                        infoWindow.open(map, marker);
-                }
-        };
-}
-
-
-function generate_table(trains) {
-        var content = '<table border="1"><tbody><tr><td>Time to Arrival (sec)</td><td>Destination</td></tr>'
-        for (j = 0; j < trains.length; j++) {
-                tripData = '<tr><td>' + trains[j].time +'</td><td>'
-                                + trains[j].dest+'</td></tr>';
-                content += tripData;
-        }
-        content += '</tbody></table>';
-        return content;
-}
 
 /*
 *  Iterates through 'linked list' table structure and draws a line between
@@ -212,6 +165,54 @@ function create_infobox(marker, pos, map) {
         create_line(pathCoords, '#0000FF', map);
 }
 
+
+function bindInfoWindow(marker, map, infowindow) {
+        marker.addListener('click', function() {
+                station_info(map, marker);
+        });
+}
+
+// Creates info window which, upon click, displays closest station/distance
+function station_info(map, marker) {
+        var request = new XMLHttpRequest();
+        request.open("GET", "https://sheltered-forest-5520.herokuapp.com/redline.json", true);
+        request.onreadystatechange = callme;
+        request.send(null);
+
+
+        function callme() {
+                if (request.readyState == 4 && request.status == 200) {
+                        raw_data = request.responseText;
+                        theScheduleData = JSON.parse(raw_data);
+                        var allTrains = theScheduleData.TripList.Trips;
+                        var toStop = [];
+
+                        for (train in allTrains) {
+                                sched = allTrains[train].Predictions;
+                                for (trip in sched) {
+                                        if (sched[trip].Stop == stop)
+                                                toStop.push({dest: allTrains[train].Destination,
+                                                             time: sched[trip].Seconds});
+                                }
+                        }
+                        var infoWindow = new google.maps.InfoWindow();
+                        infoWindow.setContent(generate_table(toStop));
+                        infoWindow.open(map, marker);
+                }
+        };
+}
+
+
+function generate_table(trains) {
+        var content = '<table border="1"><tbody><tr><td>Time to Arrival (sec)</td><td>Destination</td></tr>'
+        for (j = 0; j < trains.length; j++) {
+                tripData = '<tr><td>' + trains[j].time +'</td><td>'
+                                + trains[j].dest+'</td></tr>';
+                content += tripData;
+        }
+        content += '</tbody></table>';
+        return content;
+}
 
 //Credit goes to talkol from Stack Overflow
 Number.prototype.toRad = function() {
