@@ -78,8 +78,7 @@ function place_markers(map) {
 
 function bindInfoWindow(marker, map, infowindow) {
         marker.addListener('click', function() {
-                infowindow.setContent(station_info(map, marker));
-                infowindow.open(map, this);
+                station_info(map, marker);
         });
 }
 
@@ -106,14 +105,16 @@ function station_info(map, marker) {
                                                              time: sched[trip].Seconds});
                                 }
                         }
-                        return generate_table(toStop);
+                        var infoWindow = new google.maps.InfoWindow();
+                        infoWindow.setContent(generate_table(toStop));
+                        infoWindow.open(map, marker);
                 }
         };
 }
 
 
 function generate_table(trains) {
-        var content = '<table><tbody><tr><td>Time to Arrival</td><td>Destination</td></tr>'
+        var content = '<table border="1"><tbody><tr><td>Time to Arrival (sec)</td><td>Destination</td></tr>'
         for (j = 0; j < trains.length; j++) {
                 tripData = '<tr><td>' + trains[j].time +'</td><td>'
                                 + trains[j].dest+'</td></tr>';
