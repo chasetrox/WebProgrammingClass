@@ -114,21 +114,19 @@ function create_line(pathCoords, color, map) {
         line.setMap(map);
 }
 
-/*
-* Week 4 homework beyond this point; ugly, unloved and uncommented. Such is the
-* lot of WiP.
-*/
-
-
-
+/* Utilizes in browser location services to find and mark the user on the
+ map. It then creates an infobox which contains the users closest red line
+ station. Returns the user's position */
 function mark_user(map) {
-        if (navigator.geolocation) {
+        if (navigator.geolocation) { // error checking
                 navigator.geolocation.getCurrentPosition(function(position) {
                         var pos = {lat: position.coords.latitude,
                                    lng: position.coords.longitude};
                         var marker = new google.maps.Marker({position: pos});
 			marker.setMap(map);
-                        closest_station = create_infobox(marker, pos, map);
+                        //!!! removed closest_station...
+                        //creates info box/draws line to user's closest station
+                        create_infobox(marker, pos, map);
                         return pos;
                 });
         } else {
@@ -136,13 +134,19 @@ function mark_user(map) {
         }
 }
 
-function create_infobox(marker, pos, map) {
+
+/*
+ * Iterates through all red line stops and uses the haversine formula to find
+ * the closest one to the user. Adds an infobox containing/line to it.
+ */
+function create_infobox(marker, user, map) {
         var closest_station = "";
         var distance = 0;
 
+        //Iteratively checks all stations to find closest to user
         for (stop in stations) {
                 st_pos = {lat: stations[stop].lat, lng: stations[stop].lng};
-                var d = haversine(pos, st_pos);
+                var d = haversine(user, st_pos);
                 if (d < distance || distance == 0) {
                         distance = d;
                         closest_station = stop;
@@ -158,21 +162,26 @@ function create_infobox(marker, pos, map) {
         	infowindow.open(map, marker);
         });
 
+        //Defines the endpoints and draws a path from user to closest station
         var pathCoords = [];
-        pathCoords.push({lat: pos.lat, lng: pos.lng})
+        pathCoords.push({lat: user.lat, lng: user.lng})
         pathCoords.push({lat: stations[closest_station].lat,
                          lng: stations[closest_station].lng});
         create_line(pathCoords, '#0000FF', map);
 }
 
-
+// Hacky work around to bind InfoWindow to station marker..
+//"this" fix didn't work :(
 function bindInfoWindow(marker, map, infowindow) {
         marker.addListener('click', function() {
                 station_info(map, marker);
         });
 }
 
-// Creates info window which, upon click, displays closest station/distance
+/*
+ * Creates an API request; upon response, calls "callme" which parses response
+ * and creates an infobox displaying all trains coming to that station.
+ */
 function station_info(map, marker) {
         var request = new XMLHttpRequest();
         request.open("GET", "https://sheltered-forest-5520.herokuapp.com/redline.json", true);
@@ -187,6 +196,8 @@ function station_info(map, marker) {
                         var allTrains = theScheduleData.TripList.Trips;
                         var toStop = [];
 
+                        /*Iterates through all running trains and finds trains
+                        moving towards the stop in question. Stores in toStop*/
                         for (train in allTrains) {
                                 sched = allTrains[train].Predictions;
                                 for (trip in sched) {
@@ -195,16 +206,25 @@ function station_info(map, marker) {
                                                              time: sched[trip].Seconds});
                                 }
                         }
+                        //Creates and opens infoWindow containing approaching trains
                         var infoWindow = new google.maps.InfoWindow();
                         infoWindow.setContent(generate_table(toStop));
+                        infoWindow.open(map, marker);
+                } else { //Upon error response
+                        var infoWindow = new google.maps.InfoWindow();
+                        infowindow.setContent('API error');
                         infoWindow.open(map, marker);
                 }
         };
 }
 
-
+/*
+ * Generates a table in HTML containing all trains approaching a given red line
+ * stop and includes the prediction time. Returns the table HTML.
+ */
 function generate_table(trains) {
-        var content = '<table border="1"><tbody><tr><td>Time to Arrival (sec)</td><td>Destination</td></tr>'
+        var content = '<table border="1"><tbody><tr><td>Time to Arrival (sec)\
+                        </td><td>Destination</td></tr>';
         for (j = 0; j < trains.length; j++) {
                 tripData = '<tr><td>' + trains[j].time +'</td><td>'
                                 + trains[j].dest+'</td></tr>';
@@ -219,6 +239,10 @@ Number.prototype.toRad = function() {
    return this * Math.PI / 180;
 }
 
+/*
+ * Function uses the haversine formula to return the distance between two
+ * coordinates. Credit to StackOverflow.
+ */
 function haversine(pos1, pos2) {
         var lat1 = pos1.lat, lon1 = pos1.lng;
         var lat2 = pos2.lat, lon2 = pos2.lng;
