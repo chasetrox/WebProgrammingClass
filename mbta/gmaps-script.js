@@ -210,9 +210,9 @@ function station_info(map, marker) {
                         var infoWindow = new google.maps.InfoWindow();
                         infoWindow.setContent(generate_table(toStop));
                         infoWindow.open(map, marker);
-                } else { //Upon error response
+                } else if (request.status != 200) { //Upon error response
                         var infoWindow = new google.maps.InfoWindow();
-                        infowindow.setContent('API error');
+                        infoWindow.setContent('API error');
                         infoWindow.open(map, marker);
                 }
         };
