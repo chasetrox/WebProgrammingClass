@@ -184,7 +184,7 @@ function bindInfoWindow(marker, map, infowindow) {
  */
 function station_info(map, marker) {
         var request = new XMLHttpRequest();
-        request.open("GET", "https://sheltered-forest-5520.herokuapp.com/redline.json", true);
+        request.open("GET", "https://frozen-shore-55638.herokuapp.com/redline.json", true);
         request.onreadystatechange = callme;
         request.send(null);
 
