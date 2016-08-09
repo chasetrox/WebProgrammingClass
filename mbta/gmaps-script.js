@@ -184,7 +184,7 @@ function bindInfoWindow(marker, map, infowindow) {
  */
 function station_info(map, marker) {
         var request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:5000/redline.json", true); //!!! CHANGE BACK
+        request.open("GET", "https://frozen-shore-55638.herokuapp.com/redline.json", true);
         request.onreadystatechange = callme;
         request.send(null);
 
@@ -272,7 +272,7 @@ function analytics_data(marker) {
         var data = JSON.stringify(stop);
 
         var req = new XMLHttpRequest();
-        req.open("POST", 'http://localhost:5000/stop', true);
+        req.open("POST", 'https://frozen-shore-55638.herokuapp.com/stop', true);
         req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         req.send(data);
 }
