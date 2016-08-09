@@ -184,7 +184,7 @@ function bindInfoWindow(marker, map, infowindow) {
  */
 function station_info(map, marker) {
         var request = new XMLHttpRequest();
-        request.open("GET", "https://frozen-shore-55638.herokuapp.com/redline.json", true);
+        request.open("GET", "http://localhost:5000/redline.json", true);
         request.onreadystatechange = callme;
         request.send(null);
 
@@ -193,8 +193,10 @@ function station_info(map, marker) {
                 if (request.readyState == 4 && request.status == 200) {
                         raw_data = request.responseText;
                         theScheduleData = JSON.parse(raw_data);
+
                         var allTrains = theScheduleData.TripList.Trips;
                         var toStop = [];
+                        var stop = marker.title;
 
                         /*Iterates through all running trains and finds trains
                         moving towards the stop in question. Stores in toStop*/
@@ -216,6 +218,8 @@ function station_info(map, marker) {
                         infoWindow.open(map, marker);
                 }
         };
+
+        analytics_data(marker); //sends stop info to server
 }
 
 /*
@@ -260,4 +264,11 @@ function haversine(pos1, pos2) {
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
         return (R * c)/1.609;
+}
+
+function analytics_data(marker) {
+        var stop = {stop: marker.title};
+        var data = JSON.stringify(stop);
+        var req = new XMLHttpRequest();
+        req.open("POST", )
 }
