@@ -266,15 +266,13 @@ function haversine(pos1, pos2) {
         return (R * c)/1.609;
 }
 
+//Sends the stop being requested to Node.JS server
 function analytics_data(marker) {
         var stop = {stop: marker.title};
         var data = JSON.stringify(stop);
-        
+
         var req = new XMLHttpRequest();
         req.open("POST", 'http://localhost:5000/stop', true);
         req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        req.onreadystatechange = function () {
-                console.log("server says", request.status);
-        };
         req.send(data);
 }
