@@ -184,7 +184,7 @@ function bindInfoWindow(marker, map, infowindow) {
  */
 function station_info(map, marker) {
         var request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:5000/redline.json", true);
+        request.open("GET", "http://localhost:5000/redline.json", true); //!!! CHANGE BACK
         request.onreadystatechange = callme;
         request.send(null);
 
@@ -269,6 +269,12 @@ function haversine(pos1, pos2) {
 function analytics_data(marker) {
         var stop = {stop: marker.title};
         var data = JSON.stringify(stop);
+        
         var req = new XMLHttpRequest();
-        req.open("POST", )
+        req.open("POST", 'http://localhost:5000/stop', true);
+        req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        req.onreadystatechange = function () {
+                console.log("server says", request.status);
+        };
+        req.send(data);
 }
