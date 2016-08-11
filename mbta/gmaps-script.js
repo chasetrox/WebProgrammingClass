@@ -219,7 +219,7 @@ function station_info(map, marker) {
                 }
         };
 
-        analytics_data(marker); //sends stop info to server
+        stop_analytics(marker); //records requested station in MongoDB
 }
 
 /*
@@ -266,8 +266,8 @@ function haversine(pos1, pos2) {
         return (R * c)/1.609;
 }
 
-//Sends the stop being requested to Node.JS server
-function analytics_data(marker) {
+//Sends the stop being requested to Node.JS server -> MongoDB
+function stop_analytics(marker) {
         var stop = {stop: marker.title};
         var data = JSON.stringify(stop);
 
