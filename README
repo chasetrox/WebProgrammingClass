@@ -1,0 +1,7 @@
+The contents of this repository represent my work from Tufts' CS20 course, or Web Programming.
+
+The mbta subdirectories include the implementation for a web app in JS/Express which allows users to find which Red Line station is closest to them, as well as when the next train is coming to any Red Line station.
+
+Further, in the mbta-server directory is an implementation of a JavaScript server which provides Red Line station info to the web app using Heroku.
+
+The other subdirectories (Old kentucky, messages and responsive) contain simple HTML/CSS/JS homework assignments for CS20.
