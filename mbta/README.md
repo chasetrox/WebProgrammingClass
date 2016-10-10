@@ -11,7 +11,8 @@ Use
 ---
 To run this application:
 ~~~~ 
-% git clone https://github.com/chasetrox/WebProgrammingClass/tree/master/mbta
+% git clone https://github.com/chasetrox/WebProgrammingClass.git
+% cd mbta
 % python -m SimpleHTTPServer
 ~~~~
 Finally, open http://localhost:8000 in your browser.
