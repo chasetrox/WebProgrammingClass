@@ -10,7 +10,8 @@ use of the Piazza forum, as well as StackOverflow for help.
 Use
 ---
 To run this application:
-``` % git clone https://github.com/chasetrox/WebProgrammingClass/tree/master/mbta
+~~~~ 
+% git clone https://github.com/chasetrox/WebProgrammingClass/tree/master/mbta
 % python -m SimpleHTTPServer
-```
+~~~~
 Finally, open http://localhost:8000 in your browser.
